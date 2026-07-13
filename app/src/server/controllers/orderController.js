@@ -21,8 +21,7 @@ function computeTotals(order) {
     order.discountType === "percent"
       ? Math.round((subtotal * (order.discountValue || 0)) / 100)
       : Number(order.discountValue || 0);
-  // Never let discount be negative or exceed the subtotal (flat discounts
-  // in particular could otherwise push the grand total below zero).
+
   const discountAmt = Math.min(Math.max(rawDiscountAmt, 0), subtotal);
   const taxAmt = Math.round(
     ((subtotal - discountAmt) * (order.taxPercent || 0)) / 100,
@@ -111,24 +110,12 @@ exports.updateOrder = async (req, res) => {
     const order = await Order.findById(id);
     if (!order) return res.status(404).json({ message: "Order not found" });
 
-    // Once an order is paid or cancelled it's final — don't allow editing
-    // its items/charges through this generic endpoint. Real status
-    // transitions must go through the dedicated endpoints below
-    // (sendToKitchen/markReady/serveOrder/generateBill/payOrder/cancelOrder),
-    // each of which has its own status checks and side effects (table
-    // status, bill number, payment record).
     if (["paid", "cancelled"].includes(order.status)) {
       return res.status(400).json({
         message: `This order is already ${order.status} and can no longer be edited.`,
       });
     }
 
-    // The only status transition this generic endpoint is allowed to make
-    // is "reopen" a bill (bill_pending -> open), used by the order page's
-    // "Reopen Order" button to let staff edit items again before payment.
-    // Any other requested status (in particular jumping straight to "paid")
-    // is ignored here — those must go through their dedicated endpoints so
-    // payment method/amount and bill numbers are always recorded properly.
     if (status === "open" && order.status === "bill_pending") {
       order.status = "open";
       if (order.tableId) {

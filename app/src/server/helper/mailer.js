@@ -1,62 +1,53 @@
 require("dotenv").config();
 const nodemailer = require("nodemailer");
 
-// Accept either naming — SMTP_USER/SMTP_PASS or OWNER_EMAIL/OWNER_PASS —
-// so it works with whatever the .env.local already has.
 const SMTP_USER = process.env.SMTP_USER || process.env.OWNER_EMAIL;
 const SMTP_PASS = process.env.SMTP_PASS || process.env.OWNER_PASS;
 const SMTP_FROM = process.env.SMTP_FROM || SMTP_USER;
 
 function isEmailConfigured() {
-    return Boolean(SMTP_USER && SMTP_PASS);
+  return Boolean(SMTP_USER && SMTP_PASS);
 }
 
 function getTransporter() {
-    // Works out of the box with Gmail: SMTP_USER/OWNER_EMAIL = the gmail
-    // address, SMTP_PASS/OWNER_PASS = a 16-character Gmail "App Password"
-    // (https://myaccount.google.com/apppasswords) — a normal Gmail login
-    // password will NOT work here.
-    //
-    // For any other provider, set SMTP_HOST / SMTP_PORT as well and it will
-    // be used instead of the Gmail shortcut.
-    if (process.env.SMTP_HOST) {
-        return nodemailer.createTransport({
-            host: process.env.SMTP_HOST,
-            port: Number(process.env.SMTP_PORT) || 587,
-            secure: Number(process.env.SMTP_PORT) === 465,
-            auth: {
-                user: SMTP_USER,
-                pass: SMTP_PASS,
-            },
-        });
-    }
-
+  if (process.env.SMTP_HOST) {
     return nodemailer.createTransport({
-        service: "gmail",
-        auth: {
-            user: SMTP_USER,
-            pass: SMTP_PASS,
-        },
+      host: process.env.SMTP_HOST,
+      port: Number(process.env.SMTP_PORT) || 587,
+      secure: Number(process.env.SMTP_PORT) === 465,
+      auth: {
+        user: SMTP_USER,
+        pass: SMTP_PASS,
+      },
     });
+  }
+
+  return nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: SMTP_USER,
+      pass: SMTP_PASS,
+    },
+  });
 }
 
 async function sendPasswordResetEmail({ to, resetLink, restaurantName }) {
-    if (!isEmailConfigured()) {
-        const err = new Error(
-            "Email service is not configured. Set SMTP_USER/SMTP_PASS (or OWNER_EMAIL/OWNER_PASS) in .env.local",
-        );
-        err.code = "EMAIL_NOT_CONFIGURED";
-        throw err;
-    }
+  if (!isEmailConfigured()) {
+    const err = new Error(
+      "Email service is not configured. Set SMTP_USER/SMTP_PASS (or OWNER_EMAIL/OWNER_PASS) in .env.local",
+    );
+    err.code = "EMAIL_NOT_CONFIGURED";
+    throw err;
+  }
 
-    const transporter = getTransporter();
-    const brand = restaurantName || "Restaurant Management System";
+  const transporter = getTransporter();
+  const brand = restaurantName || "Restaurant Management System";
 
-    await transporter.sendMail({
-        from: SMTP_FROM,
-        to,
-        subject: `Reset your ${brand} password`,
-        html: `
+  await transporter.sendMail({
+    from: SMTP_FROM,
+    to,
+    subject: `Reset your ${brand} password`,
+    html: `
       <!DOCTYPE html>
       <html>
         <head>
@@ -107,7 +98,7 @@ async function sendPasswordResetEmail({ to, resetLink, restaurantName }) {
         </body>
       </html>
     `,
-    });
+  });
 }
 
 module.exports = { sendPasswordResetEmail, isEmailConfigured };

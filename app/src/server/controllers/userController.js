@@ -9,7 +9,10 @@ const {
   generateHashPassword,
 } = require("../helper/authFunction");
 const { clearRateLimit } = require("../middleware/rateLimiter");
-const { sendPasswordResetEmail, isEmailConfigured } = require("../helper/mailer");
+const {
+  sendPasswordResetEmail,
+  isEmailConfigured,
+} = require("../helper/mailer");
 
 exports.signup = async (req, res) => {
   const errors = validationResult(req);

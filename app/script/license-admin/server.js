@@ -9,9 +9,6 @@ const { MongoClient } = require("mongodb");
 const SECRET_SALT = "INV-ZAIN-2026-SECRET-XK9P";
 const DEACTIVATE_SALT = "INV-ZAIN-DEACTIVATE-2026-YP7Q";
 
-// This admin tool reads LICENSE_DB_URI from .env.admin — a file that is
-// NEVER bundled into a customer's install (unlike .env.local). This keeps
-// your real database credentials off of every customer's machine entirely.
 const CLOUD_URI = process.env.LICENSE_DB_URI;
 const PORT = 4001;
 
@@ -57,11 +54,9 @@ async function main() {
       const docs = await licenses.find({}).sort({ activatedAt: -1 }).toArray();
       res.json(docs);
     } catch (err) {
-      res
-        .status(500)
-        .json({
-          message: "Atlas se data load nahi ho saka. Internet check karein.",
-        });
+      res.status(500).json({
+        message: "Atlas se data load nahi ho saka. Internet check karein.",
+      });
     }
   });
 
@@ -102,11 +97,9 @@ async function main() {
 
       res.json({ key });
     } catch (err) {
-      res
-        .status(500)
-        .json({
-          message: "Atlas par likhne mein masla — internet check karein.",
-        });
+      res.status(500).json({
+        message: "Atlas par likhne mein masla — internet check karein.",
+      });
     }
   });
 
@@ -125,11 +118,9 @@ async function main() {
 
       res.json({ deactivationCode });
     } catch (err) {
-      res
-        .status(500)
-        .json({
-          message: "Atlas par likhne mein masla — internet check karein.",
-        });
+      res.status(500).json({
+        message: "Atlas par likhne mein masla — internet check karein.",
+      });
     }
   });
 
@@ -147,11 +138,9 @@ async function main() {
 
       res.json({ ok: true });
     } catch (err) {
-      res
-        .status(500)
-        .json({
-          message: "Atlas par likhne mein masla — internet check karein.",
-        });
+      res.status(500).json({
+        message: "Atlas par likhne mein masla — internet check karein.",
+      });
     }
   });
 
@@ -173,11 +162,9 @@ async function main() {
 
       res.json({ ok: true });
     } catch (err) {
-      res
-        .status(500)
-        .json({
-          message: "Atlas par likhne mein masla — internet check karein.",
-        });
+      res.status(500).json({
+        message: "Atlas par likhne mein masla — internet check karein.",
+      });
     }
   });
 
@@ -190,11 +177,9 @@ async function main() {
       await licenses.deleteOne({ computerId });
       res.json({ ok: true });
     } catch (err) {
-      res
-        .status(500)
-        .json({
-          message: "Atlas se delete karne mein masla — internet check karein.",
-        });
+      res.status(500).json({
+        message: "Atlas se delete karne mein masla — internet check karein.",
+      });
     }
   });
 

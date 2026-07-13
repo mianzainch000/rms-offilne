@@ -113,16 +113,6 @@ function isActivated() {
 }
 
 async function checkRemoteLicenseStatus(computerId) {
-  // IMPORTANT: this must NEVER connect directly to MongoDB/Atlas from the
-  // customer's installed app. A raw connection string bundled in the app
-  // can be extracted from the installer in seconds (npx asar extract) and
-  // used to read/write your database directly — including a customer
-  // flipping their own "revoked" flag back to "active" to defeat the
-  // deactivate/kill-switch feature.
-  //
-  // Instead, the app only calls a small HTTP API (license-api/server.js,
-  // deployed separately by the owner) which holds the real database
-  // credentials server-side and only ever answers "revoked: true/false".
   const apiUrl = process.env.LICENSE_API_URL;
   if (!apiUrl || !apiUrl.trim()) {
     return { checked: false, reason: "not-configured" };

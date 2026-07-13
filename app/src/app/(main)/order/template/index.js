@@ -139,10 +139,12 @@ export default function OrderEditorTemplate() {
       (s, i) => s + (i.price || 0) * (i.qty || 0),
       0,
     );
-    const discount =
+    const rawDiscount =
       order.discountType === "percent"
         ? Math.round((subtotal * (order.discountValue || 0)) / 100)
         : Number(order.discountValue || 0);
+
+    const discount = Math.min(Math.max(rawDiscount, 0), subtotal);
     const tax = Math.round(
       ((subtotal - discount) * (order.taxPercent || 0)) / 100,
     );

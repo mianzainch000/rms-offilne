@@ -83,11 +83,9 @@ exports.deleteExpenseCategory = async (req, res) => {
 
     const inUse = await Expense.countDocuments({ category: category.name });
     if (inUse > 0)
-      return res
-        .status(400)
-        .json({
-          message: "Remove or re-categorize expenses using this category first",
-        });
+      return res.status(400).json({
+        message: "Remove or re-categorize expenses using this category first",
+      });
 
     await ExpenseCategory.findByIdAndDelete(id);
     res.status(200).json({ message: "Category deleted" });

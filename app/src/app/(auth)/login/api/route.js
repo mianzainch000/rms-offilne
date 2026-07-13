@@ -14,12 +14,14 @@ export async function POST(req) {
       maxAge: 24 * 60 * 60,
       path: "/",
       sameSite: "lax",
+      secure: true,
     });
     cookieStore.set("sessionToken", token, {
       maxAge: 24 * 60 * 60,
       path: "/",
       sameSite: "lax",
       httpOnly: true,
+      secure: true,
     });
 
     return new Response(JSON.stringify(res.data), { status: res.status });

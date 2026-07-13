@@ -45,8 +45,8 @@ export default function ForgotPasswordTemplate() {
       {sent ? (
         <div className={ui.hintBox}>
           If an account exists for <b>{email}</b>, a password reset link has
-          been sent to that email. The link expires in 15 minutes. Please
-          check your inbox (and spam folder).
+          been sent to that email. The link expires in 15 minutes. Please check
+          your inbox (and spam folder).
         </div>
       ) : (
         <>
