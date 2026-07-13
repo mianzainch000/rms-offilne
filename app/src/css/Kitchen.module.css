@@ -1,0 +1,114 @@
+.grid {
+  gap: 20px;
+  display: grid;
+  padding: 10px 0;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+}
+
+.ticket {
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.05),
+    0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+  padding: 18px;
+  display: flex;
+  border-radius: 12px;
+  flex-direction: column;
+  border: 1px solid #e5e7eb;
+  background: #ffffff !important;
+  justify-content: space-between;
+}
+
+.ticket:hover {
+  box-shadow:
+    0 10px 15px -3px rgba(0, 0, 0, 0.05),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  transform: translateY(-2px);
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  margin-bottom: 14px;
+  padding-bottom: 12px;
+  justify-content: space-between;
+  border-bottom: 2px dashed #f3f4f6;
+}
+
+.tableName {
+  color: #1f2937;
+  font-size: 18px;
+  font-weight: 700;
+  background: transparent !important;
+  font-family: var(--font-display), system-ui, sans-serif;
+}
+
+.itemList {
+  padding: 0;
+  flex-grow: 1;
+  color: #374151;
+  font-size: 15px;
+  list-style: none;
+  font-weight: 500;
+  line-height: 1.8;
+  margin: 0 0 20px 0;
+}
+
+.itemRow {
+  display: flex;
+  padding: 6px 10px;
+  border-radius: 6px;
+  margin-bottom: 6px;
+  align-items: center;
+  background: #f9fafb !important;
+}
+
+.qty {
+  color: #10b981;
+  font-weight: 700;
+  margin-right: 8px;
+  background: transparent !important;
+}
+
+.itemName {
+  background: transparent !important;
+}
+
+.footer {
+  display: flex;
+  margin-top: auto;
+  padding-top: 10px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.time {
+  color: #6b7280;
+  font-size: 12px;
+  font-weight: 500;
+  background: transparent !important;
+}
+
+.actionBtn {
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 14px;
+  border-radius: 8px;
+  color: #ffffff !important;
+  transition: background-color 0.2s;
+  background-color: #0f766e !important;
+}
+
+.actionBtn:hover {
+  background-color: #115e59 !important;
+}
+
+@media (max-width: 480px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}

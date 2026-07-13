@@ -1,0 +1,57 @@
+.loginCard {
+  width: 100%;
+  max-width: 380px;
+  padding: 36px 32px;
+  border-radius: 16px;
+  background: var(--surface);
+  box-shadow: var(--shadow-lg);
+}
+
+@media (max-width: 400px) {
+  .loginCard {
+    padding: 28px 20px;
+    border-radius: 12px;
+  }
+}
+
+.loginBrand {
+  gap: 10px;
+  display: flex;
+  margin-bottom: 6px;
+  align-items: center;
+}
+.logoMark {
+  width: 38px;
+  color: #fff;
+  height: 38px;
+  display: flex;
+  flex-shrink: 0;
+  font-size: 18px;
+  font-weight: 800;
+  border-radius: 9px;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+}
+.loginBrand span {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  font-family: var(--font-display);
+}
+.tagline {
+  font-size: 13px;
+  margin: 0 0 26px;
+  color: var(--muted);
+}
+.footNote {
+  font-size: 13px;
+  margin-top: 18px;
+  text-align: center;
+  color: var(--muted);
+}
+.footNote a {
+  font-weight: 600;
+  color: var(--accent-dark);
+}

@@ -1,0 +1,25 @@
+.reportGrid {
+  grid-template-columns: 1fr 1fr;
+}
+.panel {
+  padding: 16px 18px;
+}
+
+.monthlyPicker {
+  margin-bottom: 16px;
+}
+.pickerRow {
+  gap: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+.pickerRow:last-child {
+  margin-bottom: 0;
+}
+
+@media (max-width: 760px) {
+  .reportGrid {
+    grid-template-columns: 1fr;
+  }
+}

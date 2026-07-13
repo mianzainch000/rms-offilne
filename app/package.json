@@ -1,0 +1,80 @@
+{
+  "name": "tableturn-pos",
+  "productName": "Restaurant Management System",
+  "version": "1.0.0",
+  "private": true,
+  "main": "electron/main.js",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "start:lan": "next start -H 0.0.0.0 -p 9000",
+    "lan:ip": "node script/lan-ip.js",
+    "backup": "node script/backup-db.js",
+    "cloud-sync": "node script/cloud-sync.js",
+    "restore-from-cloud": "node script/restore-from-cloud.js",
+    "license-admin": "node script/license-admin/server.js",
+    "lint": "next lint",
+    "obfuscate": "node script/obfuscate-electron.js",
+    "electron:dev": "next build && electron electron-src/main.js",
+    "dist": "next build && npm run obfuscate && electron-builder --win && node script/pick-dist-folder.js"
+  },
+  "dependencies": {
+    "axios": "^1.7.9",
+    "bcryptjs": "^2.4.3",
+    "cookies-next": "^4.3.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-validator": "^7.2.1",
+    "glob": "^13.0.6",
+    "jsonwebtoken": "^9.0.2",
+    "mongodb": "^6.10.0",
+    "mongoose": "^8.9.3",
+    "next": "14.2.35",
+    "nextjs-toploader": "^3.9.17",
+    "node-machine-id": "^1.1.12",
+    "nodemailer": "^9.0.3",
+    "prettier": "^3.9.4",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "selfsigned": "^2.4.1"
+  },
+  "devDependencies": {
+    "electron": "^31.0.0",
+    "electron-builder": "^24.13.3",
+    "javascript-obfuscator": "^4.1.1"
+  },
+  "build": {
+    "appId": "com.neno.pos",
+    "productName": "Restaurant Management System",
+    "asar": true,
+    "files": [
+      "electron/**/*",
+      "script/**/*",
+      ".next/**/*",
+      "public/**/*",
+      "next.config.mjs",
+      "package.json",
+      ".env.local",
+      "node_modules/**/*",
+      "!electron-src/**/*",
+      "!script/license-admin/**/*",
+      "!.env.admin",
+      "!.env.admin.example"
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "electron/icon.ico",
+      "artifactName": "restaurant-management-system-Setup-${version}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "perMachine": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Restaurant Management System"
+    }
+  }
+}

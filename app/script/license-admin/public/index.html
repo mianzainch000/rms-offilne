@@ -1,0 +1,875 @@
+<!doctype html>
+<html lang="ur">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>License Admin — Atlas (Remote Control)</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      :root {
+        --bg: #0a0f1e;
+        --card: #111827;
+        --border: #1e2d45;
+        --accent: #3b82f6;
+        --green: #22c55e;
+        --red: #ef4444;
+        --orange: #f97316;
+        --text: #f1f5f9;
+        --muted: #64748b;
+        --muted2: #94a3b8;
+      }
+      body {
+        background: var(--bg);
+        font-family: "Segoe UI", sans-serif;
+        min-height: 100vh;
+        color: var(--text);
+        padding: 16px;
+      }
+      .wrap {
+        max-width: 960px;
+        margin: 0 auto;
+      }
+
+      .hdr {
+        text-align: center;
+        margin-bottom: 16px;
+      }
+      .hdr h1 {
+        font-size: clamp(18px, 4vw, 26px);
+        font-weight: 700;
+        margin-bottom: 8px;
+      }
+      .hdr .warn {
+        color: var(--red);
+        font-size: 12px;
+        background: rgba(239, 68, 68, 0.1);
+        border: 1px solid rgba(239, 68, 68, 0.3);
+        display: inline-block;
+        padding: 5px 14px;
+        border-radius: 20px;
+      }
+
+      .statusbar {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 10px 16px;
+        margin-bottom: 16px;
+        text-align: center;
+        font-size: 13px;
+      }
+      .statusbar.ok {
+        color: var(--green);
+      }
+      .statusbar.err {
+        color: var(--red);
+      }
+
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+        gap: 10px;
+        margin-bottom: 16px;
+      }
+      .stat {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 12px;
+        text-align: center;
+      }
+      .stat-n {
+        font-size: clamp(20px, 4vw, 28px);
+        font-weight: 700;
+        color: var(--accent);
+      }
+      .stat-l {
+        font-size: 11px;
+        color: var(--muted);
+        margin-top: 2px;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 16px;
+        margin-bottom: 16px;
+      }
+      .card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 20px;
+      }
+      .card h2 {
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--muted2);
+        margin-bottom: 16px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      label {
+        display: block;
+        font-size: 12px;
+        color: var(--muted2);
+        margin-bottom: 5px;
+        font-weight: 500;
+      }
+      input[type="text"] {
+        width: 100%;
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 10px 12px;
+        color: var(--text);
+        font-size: 14px;
+        margin-bottom: 12px;
+        outline: none;
+        transition: border-color 0.2s;
+      }
+      input[type="text"]:focus {
+        border-color: var(--accent);
+      }
+      .mono {
+        font-family: monospace;
+        letter-spacing: 2px;
+      }
+
+      .btn {
+        width: 100%;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        padding: 11px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: opacity 0.2s;
+        margin-bottom: 6px;
+      }
+      .btn:hover {
+        opacity: 0.85;
+      }
+      .btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+      .btn-b {
+        background: var(--accent);
+      }
+      .btn-r {
+        background: var(--red);
+      }
+
+      .rbox {
+        background: var(--bg);
+        border-radius: 10px;
+        padding: 14px;
+        text-align: center;
+        margin-top: 10px;
+        display: none;
+      }
+      .rbox-g {
+        border: 1px solid var(--green);
+      }
+      .rbox-r {
+        border: 1px solid var(--red);
+      }
+      .ktext {
+        font-family: monospace;
+        font-size: clamp(16px, 3vw, 22px);
+        font-weight: 700;
+        letter-spacing: 3px;
+        margin: 8px 0 10px;
+      }
+      .kg {
+        color: var(--green);
+      }
+      .kr {
+        color: var(--red);
+      }
+      .cbtn {
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        padding: 7px 16px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .cbtn:hover {
+        opacity: 0.85;
+      }
+      .cbtn-g {
+        background: var(--green);
+      }
+      .cbtn-r {
+        background: var(--red);
+      }
+
+      .hcard {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 20px;
+      }
+      .hhdr {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 12px;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .hhdr h2 {
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--muted2);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin: 0;
+      }
+      .hright {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      .sinp {
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 7px 11px;
+        color: var(--text);
+        font-size: 13px;
+        outline: none;
+        width: 180px;
+        min-width: 120px;
+      }
+      .sinp:focus {
+        border-color: var(--accent);
+      }
+      .clrbtn {
+        background: transparent;
+        border: 1px solid var(--accent);
+        color: var(--accent);
+        border-radius: 6px;
+        padding: 6px 10px;
+        font-size: 12px;
+        cursor: pointer;
+        white-space: nowrap;
+      }
+      .tag {
+        display: inline-block;
+        background: rgba(59, 130, 246, 0.1);
+        border: 1px solid rgba(59, 130, 246, 0.3);
+        color: var(--accent);
+        border-radius: 4px;
+        padding: 2px 7px;
+        font-size: 11px;
+        margin-left: 6px;
+      }
+
+      .rec {
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 12px 14px;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      .rec:hover {
+        border-color: #334155;
+      }
+      .rec.deact {
+        border-color: rgba(239, 68, 68, 0.3);
+        background: rgba(239, 68, 68, 0.03);
+      }
+      .rinfo {
+        flex: 1;
+        min-width: 160px;
+      }
+      .rname {
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 2px;
+        word-break: break-word;
+      }
+      .rid {
+        font-size: 11px;
+        color: var(--muted);
+        font-family: monospace;
+        margin-bottom: 2px;
+        word-break: break-all;
+      }
+      .rdate {
+        font-size: 11px;
+        color: var(--muted);
+      }
+      .rkey {
+        font-family: monospace;
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--green);
+        letter-spacing: 1px;
+        word-break: break-all;
+      }
+      .rkey.off {
+        color: var(--red);
+        text-decoration: line-through;
+        opacity: 0.6;
+      }
+      .badge {
+        display: inline-block;
+        font-size: 10px;
+        font-weight: 600;
+        padding: 2px 7px;
+        border-radius: 20px;
+        margin-left: 5px;
+      }
+      .b-on {
+        background: rgba(34, 197, 94, 0.15);
+        color: var(--green);
+        border: 1px solid rgba(34, 197, 94, 0.3);
+      }
+      .b-off {
+        background: rgba(239, 68, 68, 0.15);
+        color: var(--red);
+        border: 1px solid rgba(239, 68, 68, 0.3);
+      }
+      .abtns {
+        display: flex;
+        gap: 5px;
+        flex-wrap: wrap;
+      }
+      .sbtn {
+        background: transparent;
+        border-radius: 6px;
+        padding: 5px 9px;
+        font-size: 11px;
+        cursor: pointer;
+        border: 1px solid;
+        white-space: nowrap;
+      }
+      .sbtn:hover {
+        opacity: 0.7;
+      }
+      .sbtn-g {
+        border-color: var(--green);
+        color: var(--green);
+      }
+      .sbtn-r {
+        border-color: var(--red);
+        color: var(--red);
+      }
+      .sbtn-b {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+      .empty {
+        text-align: center;
+        color: var(--muted);
+        font-size: 13px;
+        padding: 36px 0;
+      }
+      .divider {
+        border: none;
+        border-top: 1px solid var(--border);
+        margin: 12px 0;
+      }
+
+      .toast {
+        position: fixed;
+        bottom: 20px;
+        right: 16px;
+        left: 16px;
+        max-width: 360px;
+        margin: 0 auto;
+        background: #1e293b;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 12px 16px;
+        color: var(--text);
+        font-size: 13px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+        z-index: 999;
+        transform: translateY(100px);
+        opacity: 0;
+        transition: all 0.3s;
+        text-align: center;
+      }
+      .toast.show {
+        transform: translateY(0);
+        opacity: 1;
+      }
+
+      @media (max-width: 480px) {
+        .sinp {
+          width: 100%;
+        }
+        .hright {
+          width: 100%;
+        }
+        .rec {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+        .abtns {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="hdr">
+        <h1>🔑 License Admin — Remote Control (Atlas)</h1>
+        <div class="warn">
+          ⚠️ YEH TOOL SIRF AAPKE PAAS RAHE — KISI KO MAT DENA
+        </div>
+      </div>
+
+      <div class="statusbar" id="statusBar">
+        🔄 Atlas se connect ho raha hai...
+      </div>
+
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-n" id="totalCount">0</div>
+          <div class="stat-l">Total</div>
+        </div>
+        <div class="stat">
+          <div class="stat-n" id="activeCount">0</div>
+          <div class="stat-l">Active</div>
+        </div>
+        <div class="stat">
+          <div class="stat-n" id="inactiveCount">0</div>
+          <div class="stat-l">Deactivated</div>
+        </div>
+        <div class="stat">
+          <div class="stat-n" id="todayCount">0</div>
+          <div class="stat-l">Aaj Ki</div>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <h2>🟢 Activate — Nai Key</h2>
+          <label>Computer ID</label>
+          <input
+            type="text"
+            id="hwid"
+            class="mono"
+            placeholder="A3B9C2D7E4F8G1H2"
+            oninput="this.value = this.value.toUpperCase()"
+          />
+          <label>Customer Naam</label>
+          <input type="text" id="custname" placeholder="Ali Shop, Faisalabad" />
+          <label>Phone (optional)</label>
+          <input type="text" id="phone" placeholder="0300-1234567" />
+          <button
+            class="btn btn-b"
+            id="activateBtn"
+            onclick="generateActivationKey()"
+          >
+            🔑 Key Banayein
+          </button>
+          <div class="rbox rbox-g" id="activateResult">
+            <div style="color: var(--muted2); font-size: 12px">
+              Customer ko yeh key bhejein:
+            </div>
+            <div class="ktext kg" id="activateKeyDisplay"></div>
+            <button
+              class="cbtn cbtn-g"
+              onclick="copyText('activateKeyDisplay', this, '📋 Copy Key')"
+            >
+              📋 Copy Key
+            </button>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>🔴 Deactivate — Remote Lock</h2>
+          <label>Computer ID</label>
+          <input
+            type="text"
+            id="deact_hwid"
+            class="mono"
+            placeholder="A3B9C2D7E4F8G1H2"
+            oninput="this.value = this.value.toUpperCase()"
+          />
+          <button
+            class="btn btn-r"
+            id="deactivateBtn"
+            onclick="generateDeactivationCode()"
+          >
+            ⛔ Abhi Deactivate Karein
+          </button>
+          <div class="rbox rbox-r" id="deactivateResult">
+            <div style="color: #fca5a5; font-size: 12px">
+              ✅ Atlas par "revoked" mark ho gaya.
+            </div>
+            <div style="color: var(--muted2); font-size: 12px; margin-top: 6px">
+              Customer ki app agli internet-check (max 5 minute) par khud lock
+              ho jayegi — kuch bhejne ki zarurat nahi.
+            </div>
+            <hr class="divider" />
+            <div style="color: var(--muted); font-size: 11px">
+              Sirf agar customer ke PC par internet KABHI na aaye, tab yeh
+              manual code istemal karein:
+            </div>
+            <div
+              class="ktext kr"
+              id="deactivateKeyDisplay"
+              style="font-size: 14px"
+            ></div>
+            <button
+              class="cbtn cbtn-r"
+              onclick="copyText('deactivateKeyDisplay', this, '📋 Copy Code')"
+            >
+              📋 Copy Code
+            </button>
+          </div>
+          <hr class="divider" />
+          <div style="color: var(--muted); font-size: 12px">
+            Ya neeche list mein → 🔴 Deactivate dabayein
+          </div>
+        </div>
+      </div>
+
+      <div class="hcard">
+        <div class="hhdr">
+          <h2>
+            📜 Tamam Customers (Atlas)
+            <span class="tag" id="historyCountTag">0</span>
+          </h2>
+          <div class="hright">
+            <input
+              type="text"
+              class="sinp"
+              id="searchInput"
+              placeholder="🔍 Naam ya ID..."
+              oninput="renderHistory()"
+            />
+            <button class="clrbtn" onclick="loadLicenses()">🔄 Refresh</button>
+          </div>
+        </div>
+        <div id="historyList"></div>
+      </div>
+    </div>
+    <div class="toast" id="toast"></div>
+
+    <script>
+      let records = [];
+
+      function toast(msg, color) {
+        color = color || "#22c55e";
+        const t = document.getElementById("toast");
+        t.textContent = msg;
+        t.style.borderColor = color;
+        t.classList.add("show");
+        setTimeout(() => t.classList.remove("show"), 3000);
+      }
+
+      function setStatus(ok, msg) {
+        const el = document.getElementById("statusBar");
+        el.textContent = msg;
+        el.className = "statusbar " + (ok ? "ok" : "err");
+      }
+
+      async function loadLicenses() {
+        try {
+          const res = await fetch("/api/licenses");
+          if (!res.ok) throw new Error("fail");
+          records = await res.json();
+          setStatus(
+            true,
+            `✅ Atlas se connected — ${records.length} customer record(s).`,
+          );
+          stats();
+          renderHistory();
+        } catch (err) {
+          setStatus(
+            false,
+            "❌ Atlas se connect nahi ho saka — internet check karein.",
+          );
+        }
+      }
+
+      function stats() {
+        const today = new Date().toDateString();
+        document.getElementById("totalCount").textContent = records.length;
+        document.getElementById("activeCount").textContent = records.filter(
+          (x) => x.status !== "revoked",
+        ).length;
+        document.getElementById("inactiveCount").textContent = records.filter(
+          (x) => x.status === "revoked",
+        ).length;
+        document.getElementById("todayCount").textContent = records.filter(
+          (x) =>
+            x.activatedAt && new Date(x.activatedAt).toDateString() === today,
+        ).length;
+        document.getElementById("historyCountTag").textContent = records.length;
+      }
+
+      let editingId = null;
+
+      function renderHistory() {
+        const s = document
+          .getElementById("searchInput")
+          .value.toLowerCase()
+          .trim();
+        const f = s
+          ? records.filter(
+              (r) =>
+                (r.name || "").toLowerCase().includes(s) ||
+                (r.computerId || "").toLowerCase().includes(s) ||
+                (r.phone || "").toLowerCase().includes(s),
+            )
+          : records;
+        const sorted = [...f].sort(
+          (a, b) => new Date(b.activatedAt || 0) - new Date(a.activatedAt || 0),
+        );
+        const list = document.getElementById("historyList");
+        if (!sorted.length) {
+          list.innerHTML = `<div class="empty">${s ? "Koi record nahi mila" : "Abhi koi key nahi bani"}</div>`;
+          return;
+        }
+        list.innerHTML = sorted
+          .map((r) => {
+            if (editingId === r.computerId) {
+              return `
+      <div class="rec">
+        <div class="rinfo">
+          <input type="text" class="sinp" style="width:100%;margin-bottom:6px" id="editName_${r.computerId}" placeholder="Customer Naam" value="${(r.name || "").replace(/"/g, "&quot;")}">
+          <input type="text" class="sinp" style="width:100%" id="editPhone_${r.computerId}" placeholder="Phone" value="${(r.phone || "").replace(/"/g, "&quot;")}">
+          <div class="rid" style="margin-top:6px">ID: ${r.computerId}</div>
+        </div>
+        <div class="abtns">
+          <button class="sbtn sbtn-g" onclick="saveEdit('${r.computerId}')">💾 Save</button>
+          <button class="sbtn sbtn-b" onclick="cancelEdit()">Cancel</button>
+        </div>
+      </div>`;
+            }
+            return `
+    <div class="rec ${r.status === "revoked" ? "deact" : ""}">
+      <div class="rinfo">
+        <div class="rname">${r.name || "Naam nahi diya"}${r.phone ? ` <span style="color:var(--muted);font-size:12px;font-weight:400">${r.phone}</span>` : ""}<span class="badge ${r.status === "revoked" ? "b-off" : "b-on"}">${r.status === "revoked" ? "Deactivated" : "Active"}</span></div>
+        <div class="rid">ID: ${r.computerId}</div>
+        <div class="rdate">${r.activatedAt ? new Date(r.activatedAt).toLocaleString("en-PK", { dateStyle: "medium", timeStyle: "short" }) : ""}</div>
+      </div>
+      <div class="rkey ${r.status === "revoked" ? "off" : ""}">${r.key || ""}</div>
+      <div class="abtns">
+        <button class="sbtn sbtn-b" onclick="editRec('${r.computerId}')">✏️ Edit</button>
+        ${
+          r.status === "revoked"
+            ? `<button class="sbtn sbtn-g" onclick="reactivate('${r.computerId}')">✅ Reactivate</button>`
+            : `<button class="sbtn sbtn-r" onclick="deactivateRec('${r.computerId}')">🔴 Deactivate</button>`
+        }
+        <button class="sbtn sbtn-r" onclick="deleteRec('${r.computerId}')">🗑 Delete</button>
+      </div>
+    </div>`;
+          })
+          .join("");
+      }
+
+      function editRec(computerId) {
+        editingId = computerId;
+        renderHistory();
+      }
+
+      function cancelEdit() {
+        editingId = null;
+        renderHistory();
+      }
+
+      async function saveEdit(computerId) {
+        const name = document
+          .getElementById(`editName_${computerId}`)
+          .value.trim();
+        const phone = document
+          .getElementById(`editPhone_${computerId}`)
+          .value.trim();
+        try {
+          const res = await fetch("/api/licenses/update", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ computerId, name, phone }),
+          });
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.message);
+          toast("✅ Update ho gaya!");
+          editingId = null;
+          loadLicenses();
+        } catch (err) {
+          toast("❌ " + (err.message || "Update fail ho gaya."), "#ef4444");
+        }
+      }
+
+      async function deleteRec(computerId) {
+        if (
+          !confirm(
+            "Kya is customer ka record HAMESHA KE LIYE Atlas se delete karna hai?\n\nYe sirf history se hata dega — agar customer ki app pehle se active hai, to wo tab tak chalti rahegi jab tak koi aur action na ho.\n\nYe wapis nahi ho sakta.",
+          )
+        )
+          return;
+        try {
+          const res = await fetch("/api/licenses/delete", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ computerId }),
+          });
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.message);
+          toast("🗑 Record delete ho gaya.");
+          loadLicenses();
+        } catch (err) {
+          toast("❌ " + (err.message || "Delete fail ho gaya."), "#ef4444");
+        }
+      }
+
+      function copyText(elId, btn, resetLabel) {
+        const text = document.getElementById(elId).textContent;
+        navigator.clipboard.writeText(text);
+        const old = btn.textContent;
+        btn.textContent = "✅ Copied!";
+        setTimeout(() => (btn.textContent = resetLabel || old), 2000);
+        toast("📋 Copy ho gaya!");
+      }
+
+      async function generateActivationKey() {
+        const computerId = document
+          .getElementById("hwid")
+          .value.trim()
+          .toUpperCase();
+        const name = document.getElementById("custname").value.trim();
+        const phone = document.getElementById("phone").value.trim();
+        if (!computerId || computerId.length < 8) {
+          toast("⚠️ Sahi Computer ID daalein.", "#f97316");
+          return;
+        }
+
+        const btn = document.getElementById("activateBtn");
+        btn.disabled = true;
+        btn.textContent = "⏳ Atlas par likha ja raha hai...";
+        try {
+          const res = await fetch("/api/licenses/activate", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ computerId, name, phone }),
+          });
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.message);
+
+          document.getElementById("activateKeyDisplay").textContent = data.key;
+          document.getElementById("activateResult").style.display = "block";
+          document.getElementById("hwid").value = "";
+          document.getElementById("custname").value = "";
+          document.getElementById("phone").value = "";
+          toast("✅ Key ban gayi aur Atlas par save ho gayi!");
+          loadLicenses();
+        } catch (err) {
+          toast(
+            "❌ " + (err.message || "Atlas par likhne mein masla."),
+            "#ef4444",
+          );
+        } finally {
+          btn.disabled = false;
+          btn.textContent = "🔑 Key Banayein";
+        }
+      }
+
+      async function generateDeactivationCode() {
+        const computerId = document
+          .getElementById("deact_hwid")
+          .value.trim()
+          .toUpperCase();
+        if (!computerId || computerId.length < 8) {
+          toast("⚠️ Sahi Computer ID daalein.", "#f97316");
+          return;
+        }
+        await deactivateRec(computerId, true);
+      }
+
+      async function deactivateRec(computerId, fromTopForm) {
+        if (
+          !confirm(
+            "Kya is customer ki license abhi REMOTE deactivate karni hai?\n\nCustomer ki app agli internet-check par (max 5 minute) khud lock ho jayegi.",
+          )
+        )
+          return;
+
+        const btn = fromTopForm
+          ? document.getElementById("deactivateBtn")
+          : null;
+        if (btn) {
+          btn.disabled = true;
+          btn.textContent = "⏳ Atlas par likha ja raha hai...";
+        }
+        try {
+          const res = await fetch("/api/licenses/deactivate", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ computerId }),
+          });
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.message);
+
+          if (fromTopForm) {
+            document.getElementById("deactivateKeyDisplay").textContent =
+              data.deactivationCode;
+            document.getElementById("deactivateResult").style.display = "block";
+            document.getElementById("deact_hwid").value = "";
+          }
+          toast(
+            "⛔ Deactivate ho gaya — Atlas par 'revoked' mark hai.",
+            "#ef4444",
+          );
+          loadLicenses();
+        } catch (err) {
+          toast(
+            "❌ " + (err.message || "Atlas par likhne mein masla."),
+            "#ef4444",
+          );
+        } finally {
+          if (btn) {
+            btn.disabled = false;
+            btn.textContent = "⛔ Abhi Deactivate Karein";
+          }
+        }
+      }
+
+      async function reactivate(computerId) {
+        if (!confirm("Kya is customer ki license wapis ACTIVATE karni hai?"))
+          return;
+        try {
+          const res = await fetch("/api/licenses/reactivate", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ computerId }),
+          });
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.message);
+          toast("✅ Reactivate ho gaya — Atlas par 'active' mark hai.");
+          loadLicenses();
+        } catch (err) {
+          toast(
+            "❌ " + (err.message || "Atlas par likhne mein masla."),
+            "#ef4444",
+          );
+        }
+      }
+
+      loadLicenses();
+    </script>
+  </body>
+</html>

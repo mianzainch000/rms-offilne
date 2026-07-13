@@ -1,0 +1,35 @@
+import axiosClient from "@/config/axiosClient";
+import { apiConfig } from "@/config/apiConfig";
+
+export async function GET(req) {
+  try {
+    const url = new URL(req.url);
+    const status = url.searchParams.get("status");
+    const res = await axiosClient.get(apiConfig.getOrders, {
+      params: status ? { status } : {},
+    });
+    return new Response(JSON.stringify(res.data), { status: res.status });
+  } catch (error) {
+    return new Response(
+      JSON.stringify({
+        message: error.response?.data?.message || error.message,
+      }),
+      { status: error.response?.status || 500 },
+    );
+  }
+}
+
+export async function POST(req) {
+  try {
+    const body = await req.json();
+    const res = await axiosClient.post(apiConfig.createOrder, body);
+    return new Response(JSON.stringify(res.data), { status: res.status });
+  } catch (error) {
+    return new Response(
+      JSON.stringify({
+        message: error.response?.data?.message || error.message,
+      }),
+      { status: error.response?.status || 500 },
+    );
+  }
+}

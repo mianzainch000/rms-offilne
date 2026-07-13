@@ -1,0 +1,133 @@
+:root {
+  --bg: #f5f2ea;
+  --surface: #ffffff;
+  --sidebar: #181f2b;
+  --sidebar-hover: #232c3b;
+  --sidebar-active: #2a3547;
+  --accent: #c9822f;
+  --accent-dark: #a5661c;
+  --accent-light: #f0dcbc;
+  --teal: #2f6f68;
+  --teal-light: #e2efec;
+  --red: #c0392b;
+  --red-light: #fbe4e1;
+  --amber: #c99a2e;
+  --amber-light: #faf1dc;
+  --gray-status: #8a94a3;
+  --gray-status-light: #eceff2;
+  --text: #1f2530;
+  --muted: #6b7280;
+  --border: #e6e1d3;
+  --radius: 10px;
+  --shadow: 0 1px 3px rgba(20, 20, 10, 0.06), 0 1px 2px rgba(20, 20, 10, 0.04);
+  --shadow-lg: 0 12px 32px rgba(20, 20, 10, 0.14);
+
+  --font-display: "Poppins", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  overflow-x: hidden;
+  max-width: 100%;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+  margin: 0;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+input,
+select,
+textarea {
+  font-family: inherit;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #d8d2c2;
+  border-radius: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+#printArea {
+  display: none;
+}
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #printArea,
+  #printArea * {
+    visibility: visible;
+  }
+  #printArea {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+  }
+}
+
+.receipt-paper {
+  width: 300px;
+  margin: 0 auto;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 12px;
+  color: #000;
+  padding: 14px;
+}
+.receipt-paper .rc-center {
+  text-align: center;
+}
+.receipt-paper hr {
+  border: none;
+  border-top: 1px dashed #000;
+  margin: 8px 0;
+}
+.receipt-paper .rc-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+.receipt-paper h2 {
+  font-size: 15px;
+  margin: 0 0 2px;
+}

@@ -1,0 +1,15 @@
+{
+  "name": "rms-license-api",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Standalone license-check API. Deploy separately (Render/Vercel/VPS) — never bundle this into the customer app.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "mongodb": "^6.10.0",
+    "dotenv": "^16.4.7"
+  }
+}

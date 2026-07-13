@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="ur">
+  <head>
+    <meta charset="UTF-8" />
+    <title>App Deactivate Karein</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      :root {
+        --bg: #0a0f1e;
+        --card: #111827;
+        --border: #1e2d45;
+        --red: #ef4444;
+        --green: #22c55e;
+        --text: #f1f5f9;
+        --muted: #94a3b8;
+      }
+      body {
+        background: var(--bg);
+        font-family: "Segoe UI", sans-serif;
+        color: var(--text);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+      }
+      .card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 32px;
+        width: 400px;
+      }
+      h1 {
+        font-size: 18px;
+        margin-bottom: 4px;
+        text-align: center;
+        color: var(--red);
+      }
+      .sub {
+        text-align: center;
+        color: var(--muted);
+        font-size: 12px;
+        margin-bottom: 22px;
+      }
+      label {
+        display: block;
+        font-size: 12px;
+        color: var(--muted);
+        margin-bottom: 6px;
+      }
+      .id-box {
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 10px;
+        font-family: monospace;
+        font-size: 15px;
+        letter-spacing: 1px;
+        color: var(--muted);
+        text-align: center;
+        margin-bottom: 20px;
+      }
+      input {
+        width: 100%;
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 12px;
+        color: var(--text);
+        font-family: monospace;
+        font-size: 15px;
+        letter-spacing: 1px;
+        text-align: center;
+        text-transform: uppercase;
+        margin-bottom: 16px;
+        outline: none;
+      }
+      input:focus {
+        border-color: var(--red);
+      }
+      .btn {
+        width: 100%;
+        background: var(--red);
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        padding: 13px;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .btn:hover {
+        background: #dc2626;
+      }
+      .msg {
+        text-align: center;
+        font-size: 13px;
+        margin-top: 14px;
+        min-height: 18px;
+      }
+      .msg.err {
+        color: var(--red);
+      }
+      .msg.ok {
+        color: var(--green);
+      }
+      .note {
+        font-size: 11px;
+        color: var(--muted);
+        text-align: center;
+        margin-top: 18px;
+        line-height: 1.5;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <h1>⛔ App Deactivate Karein</h1>
+      <div class="sub">Yeh app ko is computer par band/lock kar dega</div>
+
+      <label>Is Computer ki ID</label>
+      <div class="id-box" id="computerId">...</div>
+
+      <label>Deactivation Code (owner se milega)</label>
+      <input id="codeInput" placeholder="DEL-XXXX-XXXX-XXXX" maxlength="20" />
+      <button class="btn" id="deactivateBtn">⛔ Deactivate Karein</button>
+      <div class="msg" id="msg"></div>
+
+      <div class="note">
+        Deactivate hone ke baad POS system kaam karna band kar dega.<br />
+        Dobara chalane ke liye ASAL Activation Key dobara enter karni hogi.
+      </div>
+    </div>
+
+    <script>
+      const computerIdEl = document.getElementById("computerId");
+      const codeInput = document.getElementById("codeInput");
+      const msgEl = document.getElementById("msg");
+
+      window.deactivateAPI.getComputerId().then((id) => {
+        computerIdEl.textContent = id;
+      });
+
+      codeInput.addEventListener("input", () => {
+        let raw = codeInput.value.toUpperCase();
+        // Pehle "DEL-" ya "DEL" prefix hata dein (agar user ne poora code paste kiya ho)
+        // warna is ke "D" aur "E" letters (jo hex digits bhi hain) ghalti se
+        // asal code ke sath mil kar usay corrupt kar dete the — yehi bug tha.
+        raw = raw.replace(/^DEL-?/, "");
+        let v = raw.replace(/[^A-F0-9]/g, "");
+        v =
+          v
+            .substring(0, 12)
+            .match(/.{1,4}/g)
+            ?.join("-") || v;
+        codeInput.value = "DEL-" + v;
+      });
+
+      document
+        .getElementById("deactivateBtn")
+        .addEventListener("click", async () => {
+          msgEl.textContent = "";
+          msgEl.className = "msg";
+          const result = await window.deactivateAPI.deactivate(codeInput.value);
+          if (result.ok) {
+            msgEl.textContent =
+              "⛔ App deactivate ho gayi. Band ho kar dobara khul rahi hai...";
+            msgEl.className = "msg ok";
+          } else {
+            msgEl.textContent = "❌ Code ghalat hai.";
+            msgEl.className = "msg err";
+          }
+        });
+    </script>
+  </body>
+</html>

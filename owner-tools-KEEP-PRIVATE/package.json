@@ -1,0 +1,10 @@
+{
+  "name": "owner-license-tools",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Private owner tools — DO NOT share with customers.",
+  "dependencies": {
+    "mongodb": "^6.10.0",
+    "dotenv": "^16.4.7"
+  }
+}

@@ -1,0 +1,35 @@
+.wrap {
+  gap: 12px;
+  display: flex;
+  font-size: 13.5px;
+  padding: 60px 20px;
+  align-items: center;
+  color: var(--muted);
+  flex-direction: column;
+  justify-content: center;
+}
+
+.wrapInline {
+  padding: 16px;
+}
+
+.spinner {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 3px solid var(--border);
+  border-top-color: var(--accent);
+  animation: spin 0.7s linear infinite;
+}
+
+.spinnerSm {
+  width: 18px;
+  height: 18px;
+  border-width: 2px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

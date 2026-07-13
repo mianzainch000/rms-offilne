@@ -1,0 +1,23 @@
+.settingsGrid {
+  gap: 20px;
+  display: grid;
+  align-items: start;
+  grid-template-columns: 1fr 1fr;
+}
+
+@media (max-width: 860px) {
+  .settingsGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.panel {
+  padding: 22px;
+}
+
+.hint {
+  font-size: 12px;
+  margin-top: -6px;
+  margin-bottom: 16px;
+  color: var(--muted);
+}

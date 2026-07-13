@@ -1,0 +1,186 @@
+.toastContainer {
+  gap: 12px;
+  z-index: 9999;
+  display: flex;
+  padding: 14px;
+  position: fixed;
+  pointer-events: none;
+  flex-direction: column;
+}
+
+.top-right {
+  top: 20px;
+  right: 20px;
+  align-items: flex-end;
+}
+
+.top-left {
+  top: 20px;
+  left: 20px;
+  align-items: flex-start;
+}
+
+.bottom-right {
+  right: 20px;
+  bottom: 20px;
+  align-items: flex-end;
+}
+
+.bottom-left {
+  left: 20px;
+  bottom: 20px;
+  align-items: flex-start;
+}
+
+.snackbar {
+  transition:
+    transform 0.3s ease,
+    opacity 0.3s ease;
+  color: #fff;
+  display: flex;
+  font-size: 15px;
+  min-width: 280px;
+  max-width: 380px;
+  padding: 14px 18px;
+  position: relative;
+  border-radius: 10px;
+  align-items: center;
+  pointer-events: auto;
+  animation-duration: 0.45s;
+  animation-fill-mode: both;
+  backdrop-filter: blur(6px);
+  justify-content: space-between;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.snackbar:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
+}
+
+.close {
+  border: none;
+  color: white;
+  font-size: 22px;
+  cursor: pointer;
+  margin-left: 12px;
+  background: transparent;
+  transition: transform 0.25s ease;
+}
+
+.close:hover {
+  transform: rotate(90deg) scale(1.2);
+}
+
+.message {
+  flex: 1;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: 0.3px;
+}
+
+.progress {
+  left: 0;
+  bottom: 0;
+  height: 4px;
+  width: 100%;
+  opacity: 0.95;
+  position: absolute;
+  animation-name: shrink;
+  border-radius: 0 0 10px 10px;
+  animation-timing-function: linear;
+}
+
+@keyframes shrink {
+  from {
+    width: 100%;
+  }
+  to {
+    width: 0%;
+  }
+}
+
+.error {
+  background: linear-gradient(135deg, #e53935, #d32f2f);
+}
+.error .progress {
+  background: linear-gradient(90deg, #ff7b7b, #ff4444);
+}
+
+.success {
+  background: linear-gradient(135deg, #43a047, #2e7d32);
+}
+.success .progress {
+  background: linear-gradient(90deg, #7bed9f, #2ecc71);
+}
+
+.info {
+  background: linear-gradient(135deg, #1e88e5, #1565c0);
+}
+.info .progress {
+  background: linear-gradient(90deg, #6ec6ff, #2196f3);
+}
+
+.warning {
+  background: linear-gradient(135deg, #fb8c00, #ef6c00);
+}
+.warning .progress {
+  background: linear-gradient(90deg, #ffd86f, #f39c12);
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.slide-left {
+  animation-name: slideInLeft;
+}
+.slide-right {
+  animation-name: slideInRight;
+}
+.slide-up {
+  animation-name: slideInUp;
+}
+.slide-down {
+  animation-name: slideInDown;
+}

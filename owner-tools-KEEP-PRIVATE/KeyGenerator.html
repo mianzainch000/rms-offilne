@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="ur">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🔑 Key Generator — Inventory System</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0a0f1e; --card: #111827; --border: #1e2d45;
+    --accent: #3b82f6; --green: #22c55e; --red: #ef4444;
+    --orange: #f97316; --text: #f1f5f9; --muted: #64748b; --muted2: #94a3b8;
+  }
+  body { background: var(--bg); font-family: 'Segoe UI', sans-serif; min-height: 100vh; color: var(--text); padding: 24px 16px; }
+  .container { max-width: 980px; margin: 0 auto; }
+  .header { text-align: center; margin-bottom: 28px; }
+  .header h1 { font-size: 26px; font-weight: 700; margin-bottom: 8px; }
+  .header p { color: var(--red); font-size: 13px; background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); display: inline-block; padding: 6px 16px; border-radius: 20px; }
+  .stats { display: flex; gap: 12px; margin-bottom: 24px; }
+  .stat { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px 20px; flex: 1; text-align: center; }
+  .stat-num { font-size: 26px; font-weight: 700; color: var(--accent); }
+  .stat-label { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  @media (max-width: 700px) { .grid { grid-template-columns: 1fr; } }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 24px; }
+  .card h2 { font-size: 12px; font-weight: 600; color: var(--muted2); margin-bottom: 18px; text-transform: uppercase; letter-spacing: 1px; }
+  label { display: block; font-size: 12px; color: var(--muted2); margin-bottom: 5px; font-weight: 500; }
+  input[type="text"] { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; color: var(--text); font-size: 14px; margin-bottom: 14px; outline: none; transition: border-color 0.2s; }
+  input[type="text"]:focus { border-color: var(--accent); }
+  .mono { font-family: monospace; letter-spacing: 2px; }
+  .btn { width: 100%; color: #fff; border: none; border-radius: 8px; padding: 12px; font-size: 14px; font-weight: 600; cursor: pointer; transition: opacity 0.2s; margin-bottom: 8px; }
+  .btn:hover { opacity: 0.85; }
+  .btn-blue { background: var(--accent); }
+  .btn-red { background: var(--red); }
+  .btn-orange { background: var(--orange); }
+  .result-box { background: var(--bg); border-radius: 10px; padding: 16px; text-align: center; margin-top: 12px; display: none; }
+  .result-activate { border: 1px solid var(--green); }
+  .result-deactivate { border: 1px solid var(--red); }
+  .key-text { font-family: monospace; font-size: 22px; font-weight: 700; letter-spacing: 4px; margin: 8px 0 12px; }
+  .key-green { color: var(--green); }
+  .key-red { color: var(--red); }
+  .copy-btn { color: #fff; border: none; border-radius: 6px; padding: 7px 18px; font-size: 13px; font-weight: 600; cursor: pointer; }
+  .copy-green { background: var(--green); }
+  .copy-red { background: var(--red); }
+  .full-width { grid-column: 1 / -1; }
+  .history-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; gap: 10px; flex-wrap: wrap; }
+  .search-input { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; color: var(--text); font-size: 13px; outline: none; width: 200px; }
+  .search-input:focus { border-color: var(--accent); }
+  .clear-btn { background: transparent; border: 1px solid var(--red); color: var(--red); border-radius: 6px; padding: 6px 12px; font-size: 12px; cursor: pointer; }
+  .record { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; margin-bottom: 8px; display: flex; align-items: center; gap: 12px; }
+  .record:hover { border-color: #334155; }
+  .record.deactivated { border-color: rgba(239,68,68,0.3); background: rgba(239,68,68,0.03); }
+  .record-info { flex: 1; min-width: 0; }
+  .record-name { font-size: 14px; font-weight: 600; margin-bottom: 3px; }
+  .record-id { font-size: 11px; color: var(--muted); font-family: monospace; margin-bottom: 2px; }
+  .record-date { font-size: 11px; color: var(--muted); }
+  .record-key { font-family: monospace; font-size: 12px; font-weight: 700; color: var(--green); letter-spacing: 1px; flex-shrink: 0; }
+  .record-key.inactive { color: var(--red); text-decoration: line-through; opacity: 0.6; }
+  .badge { display: inline-block; font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 20px; margin-left: 6px; }
+  .badge-active { background: rgba(34,197,94,0.15); color: var(--green); border: 1px solid rgba(34,197,94,0.3); }
+  .badge-inactive { background: rgba(239,68,68,0.15); color: var(--red); border: 1px solid rgba(239,68,68,0.3); }
+  .action-btns { display: flex; gap: 6px; flex-shrink: 0; }
+  .small-btn { background: transparent; border-radius: 6px; padding: 5px 10px; font-size: 11px; cursor: pointer; border: 1px solid; }
+  .small-btn-green { border-color: var(--green); color: var(--green); }
+  .small-btn-red { border-color: var(--red); color: var(--red); }
+  .small-btn-blue { border-color: var(--accent); color: var(--accent); }
+  .small-btn:hover { opacity: 0.7; }
+  .empty { text-align: center; color: var(--muted); font-size: 13px; padding: 40px 0; }
+  .tag { display: inline-block; background: rgba(59,130,246,0.1); border: 1px solid rgba(59,130,246,0.3); color: var(--accent); border-radius: 4px; padding: 2px 8px; font-size: 11px; margin-left: 8px; }
+  .divider { border: none; border-top: 1px solid var(--border); margin: 14px 0; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>🔑 License Key Generator</h1>
+    <p>⚠️ YEH TOOL SIRF AAPKE PAAS RAHE — KISI KO MAT DENA</p>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-num" id="totalCount">0</div><div class="stat-label">Total Keys</div></div>
+    <div class="stat"><div class="stat-num" id="activeCount">0</div><div class="stat-label">Active</div></div>
+    <div class="stat"><div class="stat-num" id="inactiveCount">0</div><div class="stat-label">Deactivated</div></div>
+    <div class="stat"><div class="stat-num" id="todayCount">0</div><div class="stat-label">Aaj Ki</div></div>
+  </div>
+
+  <div class="grid">
+
+    <!-- Activate -->
+    <div class="card">
+      <h2>🟢 Nai Key Banayein (Activate)</h2>
+      <label>Customer ka Computer ID</label>
+      <input type="text" id="hwid" class="mono" placeholder="A3B9C2D7E4F8G1H2" oninput="this.value=this.value.toUpperCase()">
+      <label>Customer ka Naam</label>
+      <input type="text" id="custname" placeholder="Ali Shop, Faisalabad">
+      <label>Phone Number (optional)</label>
+      <input type="text" id="phone" placeholder="0300-1234567">
+      <button class="btn btn-blue" onclick="generateActivationKey()">🔑 Activation Key Banayein</button>
+      <div class="result-box result-activate" id="activateResult">
+        <div style="color:var(--muted2);font-size:12px;">✅ Customer ko yeh key WhatsApp karein:</div>
+        <div class="key-text key-green" id="activateKeyDisplay"></div>
+        <button class="copy-btn copy-green" onclick="copyActivateKey()">📋 Copy Key</button>
+      </div>
+    </div>
+
+    <!-- Deactivate -->
+    <div class="card">
+      <h2>🔴 Key Deactivate Karein</h2>
+      <label>Customer ka Computer ID</label>
+      <input type="text" id="deact_hwid" class="mono" placeholder="A3B9C2D7E4F8G1H2" oninput="this.value=this.value.toUpperCase()">
+      <label>Customer ka Naam (confirm ke liye)</label>
+      <input type="text" id="deact_name" placeholder="Ali Shop">
+
+      <button class="btn btn-red" onclick="generateDeactivationCode()">⛔ Deactivation Code Banayein</button>
+
+      <div class="result-box result-deactivate" id="deactivateResult">
+        <div style="color:#fca5a5;font-size:12px;">⛔ Customer ko yeh code dein — apply karne ke baad app band ho jayegi:</div>
+        <div class="key-text key-red" id="deactivateKeyDisplay"></div>
+        <button class="copy-btn copy-red" onclick="copyDeactivateKey()">📋 Copy Code</button>
+        <hr class="divider">
+        <div style="color:var(--muted);font-size:11px;">Customer is code ko Settings > Deactivate mein daale</div>
+      </div>
+
+      <hr class="divider">
+      <div style="color:var(--muted2);font-size:12px;margin-bottom:10px;">Ya history se directly deactivate karein 👇</div>
+      <div style="color:var(--muted);font-size:12px;">Neeche list mein customer dhundhein → 🔴 Deactivate button</div>
+    </div>
+
+    <!-- History -->
+    <div class="card full-width">
+      <div class="history-header">
+        <h2 style="margin:0;">📜 Tamam Customers <span class="tag" id="historyCountTag">0</span></h2>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <input type="text" class="search-input" id="searchInput" placeholder="🔍 Naam ya ID..." oninput="renderHistory()">
+          <button class="clear-btn" onclick="clearAll()">🗑 Sab Delete</button>
+        </div>
+      </div>
+      <div id="historyList"></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const SECRET_SALT = "INV-ZAIN-2026-SECRET-XK9P";
+const DEACTIVATE_SALT = "INV-ZAIN-DEACTIVATE-2026-YP7Q";
+const STORAGE_KEY = "ims_key_records";
+
+async function sha256(msg) {
+  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(msg));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,"0")).join("").toUpperCase();
+}
+
+function loadRecords() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)||"[]"); } catch { return []; }
+}
+function saveRecords(r) { localStorage.setItem(STORAGE_KEY, JSON.stringify(r)); }
+
+function updateStats() {
+  const r = loadRecords();
+  const today = new Date().toDateString();
+  document.getElementById("totalCount").textContent = r.length;
+  document.getElementById("activeCount").textContent = r.filter(x=>x.status!=="deactivated").length;
+  document.getElementById("inactiveCount").textContent = r.filter(x=>x.status==="deactivated").length;
+  document.getElementById("todayCount").textContent = r.filter(x=>new Date(x.date).toDateString()===today).length;
+  document.getElementById("historyCountTag").textContent = r.length;
+}
+
+function renderHistory() {
+  const records = loadRecords();
+  const search = document.getElementById("searchInput").value.toLowerCase().trim();
+  const filtered = search ? records.filter(r=>(r.name||"").toLowerCase().includes(search)||(r.hwid||"").toLowerCase().includes(search)||(r.phone||"").toLowerCase().includes(search)) : records;
+  const sorted = [...filtered].sort((a,b)=>new Date(b.date)-new Date(a.date));
+  const list = document.getElementById("historyList");
+  if (!sorted.length) { list.innerHTML=`<div class="empty">${search?"Koi record nahi mila":"Abhi koi key nahi bani"}</div>`; return; }
+  list.innerHTML = sorted.map(r=>`
+    <div class="record ${r.status==="deactivated"?"deactivated":""}">
+      <div class="record-info">
+        <div class="record-name">
+          ${r.name||"Naam nahi diya"}
+          ${r.phone?`<span style="color:var(--muted);font-size:12px;font-weight:400;margin-left:6px;">${r.phone}</span>`:""}
+          <span class="badge ${r.status==="deactivated"?"badge-inactive":"badge-active"}">${r.status==="deactivated"?"Deactivated":"Active"}</span>
+        </div>
+        <div class="record-id">ID: ${r.hwid}</div>
+        <div class="record-date">${new Date(r.date).toLocaleString("en-PK",{dateStyle:"medium",timeStyle:"short"})}</div>
+      </div>
+      <div class="record-key ${r.status==="deactivated"?"inactive":""}">${r.key}</div>
+      <div class="action-btns">
+        <button class="small-btn small-btn-blue" onclick="copyRecord('${r.key}',this)">Copy</button>
+        ${r.status==="deactivated"
+          ? `<button class="small-btn small-btn-green" onclick="reactivate('${r.hwid}')">✅ Reactivate</button>`
+          : `<button class="small-btn small-btn-red" onclick="deactivateRecord('${r.hwid}')">🔴 Deactivate</button>`
+        }
+      </div>
+    </div>
+  `).join("");
+}
+
+function copyRecord(key, btn) {
+  navigator.clipboard.writeText(key);
+  btn.textContent="✅"; setTimeout(()=>btn.textContent="Copy",2000);
+}
+
+async function generateActivationKey() {
+  const hwid = document.getElementById("hwid").value.trim().toUpperCase();
+  const custname = document.getElementById("custname").value.trim();
+  const phone = document.getElementById("phone").value.trim();
+  if (!hwid) { alert("Computer ID daalen!"); return; }
+  if (hwid.length<8) { alert("ID bohot chota hai."); return; }
+  const hash = await sha256(`${hwid}-${SECRET_SALT}`);
+  const key = `${hash.substring(0,4)}-${hash.substring(4,8)}-${hash.substring(8,12)}-${hash.substring(12,16)}`;
+  document.getElementById("activateKeyDisplay").textContent = key;
+  document.getElementById("activateResult").style.display = "block";
+  const records = loadRecords();
+  const idx = records.findIndex(r=>r.hwid===hwid);
+  const newRec = {hwid, name:custname, phone, key, status:"active", date:new Date().toISOString()};
+  if (idx!==-1) records[idx]=newRec; else records.push(newRec);
+  saveRecords(records); updateStats(); renderHistory();
+  document.getElementById("hwid").value="";
+  document.getElementById("custname").value="";
+  document.getElementById("phone").value="";
+}
+
+async function generateDeactivationCode() {
+  const hwid = document.getElementById("deact_hwid").value.trim().toUpperCase();
+  if (!hwid) { alert("Computer ID daalen!"); return; }
+  if (hwid.length<8) { alert("ID bohot chota hai."); return; }
+  const hash = await sha256(`${hwid}-${DEACTIVATE_SALT}`);
+  const code = `DEL-${hash.substring(0,4)}-${hash.substring(4,8)}-${hash.substring(8,12)}`;
+  document.getElementById("deactivateKeyDisplay").textContent = code;
+  document.getElementById("deactivateResult").style.display = "block";
+  // Mark as deactivated in records
+  const records = loadRecords();
+  const idx = records.findIndex(r=>r.hwid===hwid);
+  if (idx!==-1) { records[idx].status="deactivated"; records[idx].deactivatedAt=new Date().toISOString(); }
+  saveRecords(records); updateStats(); renderHistory();
+  document.getElementById("deact_hwid").value="";
+  document.getElementById("deact_name").value="";
+}
+
+async function deactivateRecord(hwid) {
+  if (!confirm("Kya aap is customer ki key deactivate karna chahte hain?")) return;
+  const hash = await sha256(`${hwid}-${DEACTIVATE_SALT}`);
+  const code = `DEL-${hash.substring(0,4)}-${hash.substring(4,8)}-${hash.substring(8,12)}`;
+  const records = loadRecords();
+  const idx = records.findIndex(r=>r.hwid===hwid);
+  if (idx!==-1) { records[idx].status="deactivated"; records[idx].deactivatedAt=new Date().toISOString(); }
+  saveRecords(records); updateStats(); renderHistory();
+  alert(`Deactivation code:\n\n${code}\n\nYeh code customer ko dein — apply karne ke baad app band ho jayegi.`);
+  navigator.clipboard.writeText(code);
+}
+
+async function reactivate(hwid) {
+  const hash = await sha256(`${hwid}-${SECRET_SALT}`);
+  const key = `${hash.substring(0,4)}-${hash.substring(4,8)}-${hash.substring(8,12)}-${hash.substring(12,16)}`;
+  const records = loadRecords();
+  const idx = records.findIndex(r=>r.hwid===hwid);
+  if (idx!==-1) { records[idx].status="active"; delete records[idx].deactivatedAt; }
+  saveRecords(records); updateStats(); renderHistory();
+  navigator.clipboard.writeText(key);
+  alert(`Nai key generate ho gayi:\n\n${key}\n\n(Clipboard mein copy ho gayi) — Customer ko bhejein!`);
+}
+
+function copyActivateKey() {
+  const key = document.getElementById("activateKeyDisplay").textContent;
+  navigator.clipboard.writeText(key);
+  const btn = event.target; btn.textContent="✅ Copied!"; setTimeout(()=>btn.textContent="📋 Copy Key",2000);
+}
+
+function copyDeactivateKey() {
+  const key = document.getElementById("deactivateKeyDisplay").textContent;
+  navigator.clipboard.writeText(key);
+  const btn = event.target; btn.textContent="✅ Copied!"; setTimeout(()=>btn.textContent="📋 Copy Code",2000);
+}
+
+function clearAll() {
+  if (confirm("Tamam records delete karen? Yeh wapis nahi aayenge!")) {
+    localStorage.removeItem(STORAGE_KEY); updateStats(); renderHistory();
+  }
+}
+
+updateStats(); renderHistory();
+</script>
+</body>
+</html>

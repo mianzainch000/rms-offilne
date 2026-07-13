@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="ur">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Restaurant Management System — Activation</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      :root {
+        --bg: #0a0f1e;
+        --card: #111827;
+        --border: #1e2d45;
+        --accent: #3b82f6;
+        --green: #22c55e;
+        --red: #ef4444;
+        --text: #f1f5f9;
+        --muted: #94a3b8;
+      }
+      body {
+        background: var(--bg);
+        font-family: "Segoe UI", sans-serif;
+        color: var(--text);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+      }
+      .card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 32px;
+        width: 420px;
+      }
+      h1 {
+        font-size: 20px;
+        margin-bottom: 4px;
+        text-align: center;
+      }
+      .sub {
+        text-align: center;
+        color: var(--muted);
+        font-size: 12px;
+        margin-bottom: 22px;
+      }
+      label {
+        display: block;
+        font-size: 12px;
+        color: var(--muted);
+        margin-bottom: 6px;
+      }
+      .id-box {
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 12px;
+        font-family: monospace;
+        font-size: 18px;
+        letter-spacing: 2px;
+        color: var(--accent);
+        text-align: center;
+        margin-bottom: 8px;
+      }
+      .copy-btn {
+        width: 100%;
+        background: transparent;
+        border: 1px solid var(--border);
+        color: var(--muted);
+        border-radius: 6px;
+        padding: 8px;
+        font-size: 12px;
+        cursor: pointer;
+        margin-bottom: 20px;
+      }
+      .copy-btn:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+      input {
+        width: 100%;
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 12px;
+        color: var(--text);
+        font-family: monospace;
+        font-size: 16px;
+        letter-spacing: 2px;
+        text-align: center;
+        text-transform: uppercase;
+        margin-bottom: 16px;
+        outline: none;
+      }
+      input:focus {
+        border-color: var(--accent);
+      }
+      .btn {
+        width: 100%;
+        background: var(--accent);
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        padding: 13px;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .btn:hover {
+        background: #2563eb;
+      }
+      .msg {
+        text-align: center;
+        font-size: 13px;
+        margin-top: 14px;
+        min-height: 18px;
+      }
+      .msg.err {
+        color: var(--red);
+      }
+      .msg.ok {
+        color: var(--green);
+      }
+      .note {
+        font-size: 11px;
+        color: var(--muted);
+        text-align: center;
+        margin-top: 18px;
+        line-height: 1.5;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <h1>🔒 Restaurant Management System Activation</h1>
+      <div class="sub">Yeh software use karne se pehle activate karein</div>
+
+      <label>Aap Ka Computer ID</label>
+      <div class="id-box" id="computerId">...</div>
+      <button class="copy-btn" id="copyIdBtn">
+        📋 ID Copy Karein — Owner ko WhatsApp karein
+      </button>
+
+      <label>License Key</label>
+      <input id="keyInput" placeholder="XXXX-XXXX-XXXX-XXXX" maxlength="19" />
+      <button class="btn" id="activateBtn">🔓 Activate Karein</button>
+      <div class="msg" id="msg"></div>
+
+      <div class="note">
+        Apna "Computer ID" upar se copy karke software provider ko bhejein.<br />
+        Wo aapko is ID ke liye ek License Key denge — wahi yahan enter karein.
+      </div>
+    </div>
+
+    <script>
+      const computerIdEl = document.getElementById("computerId");
+      const keyInput = document.getElementById("keyInput");
+      const msgEl = document.getElementById("msg");
+
+      window.licenseAPI.getComputerId().then((id) => {
+        computerIdEl.textContent = id;
+      });
+
+      document.getElementById("copyIdBtn").addEventListener("click", () => {
+        navigator.clipboard.writeText(computerIdEl.textContent);
+        const btn = document.getElementById("copyIdBtn");
+        const old = btn.textContent;
+        btn.textContent = "✅ Copy ho gaya";
+        setTimeout(() => (btn.textContent = old), 1500);
+      });
+
+      // XXXX-XXXX-XXXX-XXXX auto-format
+      keyInput.addEventListener("input", () => {
+        let v = keyInput.value.toUpperCase().replace(/[^A-F0-9]/g, "");
+        v =
+          v
+            .substring(0, 16)
+            .match(/.{1,4}/g)
+            ?.join("-") || v;
+        keyInput.value = v;
+      });
+
+      document
+        .getElementById("activateBtn")
+        .addEventListener("click", async () => {
+          msgEl.textContent = "";
+          msgEl.className = "msg";
+          const result = await window.licenseAPI.activate(keyInput.value);
+          if (result.ok) {
+            msgEl.textContent =
+              "✅ Activation kamyab! POS shuru ho raha hai...";
+            msgEl.className = "msg ok";
+          } else {
+            msgEl.textContent = "❌ Key ghalat hai. Dobara check karein.";
+            msgEl.className = "msg err";
+          }
+        });
+    </script>
+  </body>
+</html>

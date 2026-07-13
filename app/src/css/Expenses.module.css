@@ -1,0 +1,130 @@
+.headerRow {
+  display: flex;
+  align-items: center;
+  margin-bottom: 14px;
+  justify-content: space-between;
+}
+
+.profitCard {
+  border-color: var(--teal);
+  background: var(--teal-light);
+}
+.profitCard .val {
+  color: var(--teal);
+}
+.lossCard {
+  border-color: var(--red);
+  background: var(--red-light);
+}
+.lossCard .val {
+  color: var(--red);
+}
+
+.mainGrid {
+  gap: 16px;
+  display: grid;
+  align-items: start;
+  grid-template-columns: 320px 1fr;
+}
+
+.formCard,
+.tableCard {
+  min-width: 0;
+  padding: 18px 20px;
+}
+
+.tableScroll {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.tableScroll table {
+  min-width: 560px;
+}
+
+.filterRow {
+  gap: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.filterSelect {
+  font-size: 13px;
+  min-width: 140px;
+  padding: 7px 10px;
+  border-radius: 8px;
+  color: var(--text);
+  background: #fdfcfa;
+  border: 1.5px solid var(--border);
+}
+.filterSelect:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.breakdownBox {
+  padding: 12px 14px;
+  border-radius: 8px;
+  margin-bottom: 14px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+}
+.breakdownHead {
+  display: flex;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  align-items: center;
+  justify-content: space-between;
+}
+.breakdownTotal {
+  font-weight: 700;
+  color: var(--red);
+}
+.breakdownChips {
+  gap: 8px;
+  display: flex;
+  flex-wrap: wrap;
+}
+.chip {
+  gap: 6px;
+  border: none;
+  display: flex;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 5px 12px;
+  align-items: center;
+  border-radius: 20px;
+  color: var(--accent-dark);
+  background: var(--accent-light);
+  border: 1px solid var(--accent);
+}
+.chipActive {
+  color: #fff;
+  background: var(--accent);
+}
+
+@media (max-width: 900px) {
+  .mainGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .formCard,
+  .tableCard {
+    padding: 14px 14px;
+  }
+  .filterSelect {
+    min-width: 0;
+    flex: 1 1 140px;
+  }
+  .headerRow {
+    gap: 8px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
